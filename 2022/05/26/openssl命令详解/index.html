@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="baidu-site-verification" content="code-bSmOaBWewJ">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css" integrity="sha256-Vzbj7sDDS/woiFS3uNKo8eIuni59rjyNGtXfstRzStA=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Gemini","darkmode":false,"version":"8.11.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":true,"lazyload":true,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="openssl命令详解">
+<meta property="og:type" content="article">
+<meta property="og:title" content="openssl命令详解">
+<meta property="og:url" content="http://example.com/2022/05/26/openssl%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="will">
+<meta property="og:description" content="openssl命令详解">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-26T10:11:53.000Z">
+<meta property="article:modified_time" content="2022-05-30T03:22:37.183Z">
+<meta property="article:author" content="will">
+<meta property="article:tag" content="ssl">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2022/05/26/openssl%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://example.com/2022/05/26/openssl%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/","path":"2022/05/26/openssl命令详解/","title":"openssl命令详解"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>openssl命令详解 | will</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">will</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">will blogs</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-commonweal"><a href="/404/" rel="section"><i class="fa fa-heartbeat fa-fw"></i>公益 404</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%E3%80%81%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">1.</span> <span class="nav-text">1、对称加密算法的应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2%E3%80%81%E5%8D%95%E5%90%91%E5%8A%A0%E5%AF%86"><span class="nav-number">2.</span> <span class="nav-text">2、单向加密</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3%E3%80%81%E5%8A%A0%E5%AF%86%E5%AF%86%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">3、加密密码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4%E3%80%81%E7%94%9F%E6%88%90%E9%9A%8F%E6%9C%BA%E6%95%B0"><span class="nav-number">4.</span> <span class="nav-text">4、生成随机数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5%E3%80%81%E7%94%9F%E6%88%90%E5%AF%86%E9%92%A5%E5%AF%B9"><span class="nav-number">5.</span> <span class="nav-text">5、生成密钥对</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6%E3%80%81%E5%88%9B%E5%BB%BACA%E5%92%8C%E7%94%B3%E8%AF%B7%E8%AF%81%E4%B9%A6"><span class="nav-number">6.</span> <span class="nav-text">6、创建CA和申请证书</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="will"
+      src="/images/my_avatar.jpg">
+  <p class="site-author-name" itemprop="name">will</p>
+  <div class="site-description" itemprop="description">will的博客</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="sidebar-button site-overview-item animated">
+    <button class="js-gitter-toggle-chat-button"><i class="fa fa-comment"></i>
+      Chat
+    </button>
+  </div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/will-lucky" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;will-lucky" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/will-lucky" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/05/26/openssl%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/my_avatar.jpg">
+      <meta itemprop="name" content="will">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="will">
+      <meta itemprop="description" content="will的博客">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="openssl命令详解 | will">
+      <meta itemprop="description" content="openssl命令详解">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          openssl命令详解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-05-26 18:11:53" itemprop="dateCreated datePublished" datetime="2022-05-26T18:11:53+08:00">2022-05-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-05-30 11:22:37" itemprop="dateModified" datetime="2022-05-30T11:22:37+08:00">2022-05-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ssl/" itemprop="url" rel="index"><span itemprop="name">ssl</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    <a title="openssl命令详解" href="/2022/05/26/openssl%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/#SOHUCS" itemprop="discussionUrl">
+      <span id="sourceId::54a0747d004c81304c21f44fab1dea0c" class="cy_cmt_count" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+    <span class="post-meta-break"></span>
+    <span class="post-meta-item" title="本文字数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-file-word"></i>
+      </span>
+      <span class="post-meta-item-text">本文字数：</span>
+      <span>10k</span>
+    </span>
+    <span class="post-meta-item" title="阅读时长">
+      <span class="post-meta-item-icon">
+        <i class="far fa-clock"></i>
+      </span>
+      <span class="post-meta-item-text">阅读时长 &asymp;</span>
+      <span>9 分钟</span>
+    </span>
+</div>
+
+            <div class="post-description">openssl命令详解</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>OpenSSL是一个安全套接字层密码库，其包括常用的密码算法、常用的密钥生成和证书封装管理功能及SSL协议，并提供了丰富的应用程序以供测试。<br> OpenSSL是一个开源的项目，其由三个部分组成：</p>
+<ol>
+<li><p>openssl命令行工具；</p>
+</li>
+<li><p>libencrypt加密算法库；</p>
+</li>
+<li><p>libssl加密模块应用库</p>
+</li>
+</ol>
+<p>这里主要学习下openssl命令工具的用法，openssl命令工具有两种运行模式：<strong>交换模式</strong>和<strong>批处理模式</strong>。直接输入openssl回车即可进入交互模式，而输入带命令选项的openssl命令则进行批处理模式。</p>
+<h4 id="1、对称加密算法的应用"><a href="#1、对称加密算法的应用" class="headerlink" title="1、对称加密算法的应用"></a>1、对称加密算法的应用</h4><p>利用OpenSSL作对称加密需要使用其子命令enc，其用法为：</p>
+<blockquote>
+<p>openssl enc -ciphername [-in filename] [-out filename] [-pass arg] [-e] [-d] [-a&#x2F;-base64] [-A] [-k password] [-kfile filename] [-K key] [-iv IV] [-S salt] [-salt] [-nosalt] [-z] [-md] [-p] [-P] [-bufsize number] [-nopad] [-debug] [-none] [-engine id]</p>
+</blockquote>
+<p>其中常用的选项为：</p>
+<blockquote>
+<p>-e：加密；<br> -d：解密；<br> -ciphername：ciphername为相应的对称加密算命名字，如-des3、-ase128、-cast、-blowfish等等。<br> -a&#x2F;-base64：使用base-64位编码格式；<br> -salt：自动插入一个随机数作为文件内容加密，默认选项；<br> -in FILENAME：指定要加密的文件的存放路径；<br> -out FILENAME：指定加密后的文件的存放路径；</p>
+</blockquote>
+<p><strong>使用案例</strong>：</p>
+<ul>
+<li>加密字符串</li>
+</ul>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="variable">@localhost</span> ~]<span class="comment"># echo &quot;hello,world&quot; | openssl enc -aes128 -e -a -salt</span></span><br><span class="line">enter aes-<span class="number">128</span>-cbc encryption <span class="symbol">password:</span></span><br><span class="line">Verifying - enter aes-<span class="number">128</span>-cbc encryption <span class="symbol">password:</span></span><br><span class="line">U2FsdGVkX1/<span class="variable constant_">LT</span>+Ri9pzjjS0FIGXJLNRc8ljvZJ3hf0M=</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>加解密文件</li>
+</ul>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="variable">@localhost</span> ~]<span class="comment"># openssl enc -des3 -e -a -in /etc/fstab -out /tmp/fstab</span></span><br><span class="line">enter des-ede3-cbc encryption <span class="symbol">password:</span></span><br><span class="line">Verifying - enter des-ede3-cbc encryption <span class="symbol">password:</span></span><br><span class="line"></span><br><span class="line">[root<span class="variable">@localhost</span> ~]<span class="comment"># cat /tmp/fstab </span></span><br><span class="line">U2FsdGVkX1/pdsq5HUjsP5Kpqr378qnZSmH1j9a4KdasuG+6Jy+Mh0cRYA5IUuJ4</span><br><span class="line">732mG1td6x2jvLq0JNpT+WcTFXoH30x1o6KDN6Kwyc26+uTjYb+cwf9ZhZWoEi4c</span><br><span class="line">5Zh1h8S4PwKA9m/ebJAh97RSLuVWqPOsZDJ9w/zE3X0iKnb8nVNEkApB6OYjkV4s</span><br><span class="line">....</span><br><span class="line"></span><br><span class="line">[root<span class="variable">@localhost</span> ~]<span class="comment"># openssl enc -d -des3 -a -salt -in /tmp/fstab </span></span><br><span class="line">enter des-ede3-cbc decryption <span class="symbol">password:</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># /etc/fstab</span></span><br><span class="line"><span class="comment"># Created by anaconda on Sun Nov 19 02:26:36 2017</span></span><br><span class="line">....</span><br><span class="line">devpts                  /dev/pts                devpts  gid=<span class="number">5</span>,mode=<span class="number">620</span>  <span class="number">0</span> <span class="number">0</span></span><br><span class="line">sysfs                   /sys                    sysfs   defaults        <span class="number">0</span> <span class="number">0</span></span><br><span class="line"><span class="built_in">proc</span>                    /<span class="built_in">proc</span>                   <span class="built_in">proc</span>    defaults        <span class="number">0</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2、单向加密"><a href="#2、单向加密" class="headerlink" title="2、单向加密"></a>2、单向加密</h4><p>OpenSSL单向加密的子命令为dgst，其语法如下：</p>
+<blockquote>
+<p>openssl dgst [-md5|-md4|-md2|-sha1|-sha|-mdc2|-ripemd160|-dss1] [-c] [-d] [-hex] [-binary] [-out filename] [-sign filename] [-keyform arg] [-passin arg] [-verify filename] [-prverify filename] [-signature filename] [-hmac key] [file…]</p>
+</blockquote>
+<p>其常用的选项为：</p>
+<blockquote>
+<p>[-md5|-md4|-md2|-sha1|-sha|-mdc2|-ripemd160|-dss1]：指定一种单向加密算法；<br> -out FILENAME：将加密的内容保存到指定的文件中；</p>
+</blockquote>
+<p>单向加密除了 openssl dgst 工具还有： md5sum，sha1sum，sha224sum，sha256sum ，sha384sum，sha512sum</p>
+<p><strong>使用案例</strong>：</p>
+<ul>
+<li>生成指定文件的特征码</li>
+</ul>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="variable">@localhost</span> ~]<span class="comment"># openssl dgst -md5 /tmp/fstab </span></span><br><span class="line"><span class="variable constant_">MD5</span>(<span class="regexp">/tmp/fstab</span>)= ef7b65e9d3200487dc06427934ce5c2d</span><br><span class="line"></span><br><span class="line">[root<span class="variable">@localhost</span> ~]<span class="comment"># md5sum /tmp/fstab </span></span><br><span class="line">ef7b65e9d3200487dc06427934ce5c2d  /tmp/fstab</span><br></pre></td></tr></table></figure>
+
+<p>或</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">root@localhost ~</span>]<span class="meta"># echo hello,world | md5sum</span></span><br><span class="line"><span class="number">757228086</span>dc1e621e37bed30e0b73e17  -</span><br><span class="line"></span><br><span class="line">[<span class="meta">root@localhost ~</span>]<span class="meta"># echo hello,world | openssl dgst -md5</span></span><br><span class="line">(stdin)= <span class="number">757228086</span>dc1e621e37bed30e0b73e1</span><br></pre></td></tr></table></figure>
+
+<h4 id="3、加密密码"><a href="#3、加密密码" class="headerlink" title="3、加密密码"></a>3、加密密码</h4><p>OpenSSL还支持生成密码的hash离散值，其子命令为passwd，语法如下：</p>
+<blockquote>
+<p>openssl passwd [-crypt] [-1] [-apr1] [-salt string] [-in file] [-stdin] [-noverify] [-quiet] [-table] {password}</p>
+</blockquote>
+<p>常用选项为：</p>
+<blockquote>
+<p>-salt STRING：添加随机数；<br> -in FILE：对输入的文件内容进行加密；<br> -stdin：对标准输入的内容进行加密；</p>
+</blockquote>
+<p><strong>使用案例</strong>：</p>
+<ul>
+<li>生成密码的hash值</li>
+</ul>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="variable">@localhost</span> ~]<span class="comment"># openssl passwd -1 -salt 123456 PASSWORD</span></span><br><span class="line">$<span class="number">1</span><span class="variable">$12345</span>6<span class="variable">$KP0rRo6agiZOiJz8GMOd0</span>0</span><br></pre></td></tr></table></figure>
+
+<h4 id="4、生成随机数"><a href="#4、生成随机数" class="headerlink" title="4、生成随机数"></a>4、生成随机数</h4><p>openssl命令也支持生成随机数，其子命令为rand，对应的语法为：</p>
+<blockquote>
+<p>openssl rand [-out file] [-rand file(s)] [-base64] [-hex] num</p>
+</blockquote>
+<p>常用选项有：</p>
+<blockquote>
+<p>-base64：以base64编码格式输出；<br> -hex：使用十六进制编码格式；<br> -out FILE：将生成的内容保存在指定的文件中；</p>
+</blockquote>
+<p><strong>使用案例</strong>：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">root@localhost ~</span>]<span class="meta"># openssl rand  -base64  10</span></span><br><span class="line">d0etSF7CA13hhg==</span><br></pre></td></tr></table></figure>
+
+<h4 id="5、生成密钥对"><a href="#5、生成密钥对" class="headerlink" title="5、生成密钥对"></a>5、生成密钥对</h4><p>利用openssl命令的子命令genrsa生成私钥，然后再使用子命令rsa私钥中提取公钥。<br> genrsa的语法如下：</p>
+<blockquote>
+<p>openssl genrsa [-out filename] [-passout arg] [-des] [-des3] [-idea] [-f4] [-3] [-rand file(s)] [-engine id] [numbits]<br> 常用选项：<br> -out FILENAME：将生成的私钥保存至指定的文件中；<br> [-des] [-des3] [-idea]：指定加密算法；<br> numbits：指明生成的私钥大小，默认是512；</p>
+</blockquote>
+<p>通常来说秘钥文件的权限一般只能由管理员访问，因此可以结合umask命令来设置生成的密钥文件的权限，如：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">root@localhost ~</span>]<span class="meta"># (umask 077;openssl genrsa -out CA.key 4096)</span></span><br><span class="line">Generating RSA <span class="keyword">private</span> key, <span class="number">4096</span> bit <span class="built_in">long</span> modulus</span><br><span class="line">.........................................................................................................................................++</span><br><span class="line">.................................................................++</span><br><span class="line">e <span class="keyword">is</span> <span class="number">65537</span> (<span class="number">0x10001</span>)</span><br><span class="line">[<span class="meta">root@localhost ~</span>]<span class="meta"># ll CA.key </span></span><br><span class="line">-rw-------. <span class="number">1</span> root root <span class="number">3243</span> Feb  <span class="number">2</span> <span class="number">06</span>:<span class="number">33</span> CA.key</span><br></pre></td></tr></table></figure>
+
+<p>而随后可利用rsa子命令生成的私钥文件中提取公钥，rsa子命令的语法为：</p>
+<blockquote>
+<p>openssl rsa [-inform PEM|NET|DER] [-outform PEM|NET|DER] [-in filename] [-passin arg] [-out filename] [-passout arg] [-sgckey] [-des] [-des3] [-idea] [-text] [-noout] [-modulus] [-check] [-pubin] [-pubout] [-engine id]</p>
+</blockquote>
+<p>常用选项为：<br> -in FILENAME：指明私钥文件的存放路径；<br> -out FILENAME：指明将公钥的保存路径；<br> -pubout：根据提供的私钥，从中提取出公钥；</p>
+<p>如：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="variable">@localhost</span> ~]<span class="comment"># openssl rsa -pubout -in CA.key </span></span><br><span class="line">writing <span class="variable constant_">RSA</span> key</span><br><span class="line">-----<span class="variable constant_">BEGIN</span> <span class="variable constant_">PUBLIC</span> <span class="variable constant_">KEY</span>-----</span><br><span class="line">MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA0r92sttB5yUOI3nE2nvj</span><br><span class="line">PeTZaKkFw2f4cVy8x615afGDhw/XvfWqd2X3BqUy9pPyVoYLOrO0fvGWtx0zVy76</span><br><span class="line"><span class="variable constant_">HZ</span>/N3vkUdmzQlJahwKl+K2rVYl2U7fw+qO1UHzrvnNqe6p10KURwAsD1nhuRf/ra</span><br><span class="line">SlxUuOPLNjyu5QeSjtoMuYbhk72M+ht+vNuZI8i2e9B6t6HzoHvnmxldjj+4tQje</span><br><span class="line">BCxeWwaerb8iWZ8KiNDGtqu1X20EevvJY7sp7RzzUPT4EKrXQ6BUyl+VeodHiHxp</span><br><span class="line">l/8gVdlDEYIyurjBwNJDl3I+ug+MZwB0BaPSqNdbgcQbwdM/E6SiBIKU366XkZ39</span><br><span class="line">uDneIZEaZIe12k3MlxqvXyLrsHc2V4jNdK+BNF0bU8pd8Z0wJ7B+Fl/k1+4fD5hS</span><br><span class="line">WLOziix36WrqWzgSgOAV4oEwZjLfBTWIPEcDLUO2LhrhHv4S9APi4FAIslu8QlHv</span><br><span class="line">dkzHaG0e6zolsIAHa1wClTVwFFfmABmo2axpc3IAu9EQA4lLJwK5MiDlANHJBTY7</span><br><span class="line">HXlAOGADgJXY3euiUB4oQ/WPcP2XPTmRQcYoey3hRETPbJd6heM6Rfx9TyCxjxeo</span><br><span class="line">xStmZmhHKZZek+h14Q/hmaK946SkPcbbszL1WzK/STwpceDgnijMgStq6fIippLb</span><br><span class="line">zaQiGXIq0SE8FGuYnCTYJPMCAwEAAQ==</span><br><span class="line">-----<span class="variable constant_">END</span> <span class="variable constant_">PUBLIC</span> <span class="variable constant_">KEY</span>-----</span><br></pre></td></tr></table></figure>
+
+<h4 id="6、创建CA和申请证书"><a href="#6、创建CA和申请证书" class="headerlink" title="6、创建CA和申请证书"></a>6、创建CA和申请证书</h4><p>在使用OpenSSL命令创建证书前，可查看配置文件&#x2F;etc&#x2F;pki&#x2F;tls&#x2F;openss.conf文件，查看该文件定义了的证书存放位置及名称。<br> 1）创建自签证书<br> 首先为CA提供所需的目录及文件，并指明证书的开始编号：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># mkdir -pv /etc/pki/CA/&#123;certs,crl,newcerts&#125;</span></span><br><span class="line"><span class="comment"># touch /etc/pki/CA/&#123;serial,index.txt&#125;</span></span><br><span class="line"><span class="comment"># echo 01 &gt; /etc/pki/CA/serial</span></span><br></pre></td></tr></table></figure>
+
+<p>随后生成私钥，注意私钥的文件名及其存放的位置，需与配置文件中相匹配：</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">root@localhost ~</span>]<span class="meta"># (umask 077;openssl genrsa -out /etc/pki/CA/private/CAkey.pem 4096)</span></span><br><span class="line">Generating RSA <span class="keyword">private</span> key, <span class="number">4096</span> bit <span class="built_in">long</span> modulus</span><br><span class="line">..............................++</span><br><span class="line">.........................................................++</span><br><span class="line">e <span class="keyword">is</span> <span class="number">65537</span> (<span class="number">0x10001</span>)</span><br><span class="line">[<span class="meta">root@localhost ~</span>]<span class="meta"># ll /etc/pki/CA/private/CAkey.pem </span></span><br><span class="line">-rw-------. <span class="number">1</span> root root <span class="number">3243</span> Feb  <span class="number">2</span> <span class="number">07</span>:<span class="number">10</span> /etc/pki/CA/<span class="keyword">private</span>/CAkey.pem</span><br></pre></td></tr></table></figure>
+
+<p>最后创建自签证书：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="variable">@localhost</span> <span class="variable constant_">CA</span>]<span class="comment"># openssl req -new -x509 -key /etc/pki/CA/private/cakey.pem  -out /etc/pki/CA/cacert.pem -days 3650</span></span><br><span class="line">You are about to be asked to enter information that will be incorporated</span><br><span class="line">into your certificate request.</span><br><span class="line">What you are about to enter is what is called a Distinguished Name <span class="keyword">or</span> a <span class="variable constant_">DN</span>.</span><br><span class="line">There are quite a few fields but you can leave some blank</span><br><span class="line">For some fields there will be a default value,</span><br><span class="line">If you enter <span class="string">&#x27;.&#x27;</span>, the field will be left blank.</span><br><span class="line">-----</span><br><span class="line">Country Name (<span class="number">2</span> letter code) [<span class="variable constant_">XX</span>]<span class="symbol">:CN</span></span><br><span class="line">State <span class="keyword">or</span> Province Name (full name) []<span class="symbol">:guangdong</span></span><br><span class="line">Locality Name (eg, city) [Default City]<span class="symbol">:shenzhen</span>  </span><br><span class="line">Organization Name (eg, company) [Default Company Ltd]<span class="symbol">:magedu</span></span><br><span class="line">Organizational Unit Name (eg, section) []<span class="symbol">:ops</span></span><br><span class="line">Common Name (eg, your name <span class="keyword">or</span> your server<span class="string">&#x27;s hostname) []:ca.magedu.com</span></span><br><span class="line"><span class="string">Email Address []:</span></span><br><span class="line"><span class="string">[root@localhost CA]# </span></span><br><span class="line"><span class="string">[root@localhost CA]# </span></span><br><span class="line"><span class="string">[root@localhost CA]# ll </span></span><br><span class="line"><span class="string">total 20</span></span><br><span class="line"><span class="string">-rw-r--r--. 1 root root 2025 Apr 17 02:14 cacert.pem</span></span><br><span class="line"><span class="string">drwxr-xr-x. 2 root root 4096 May  9  2016 certs</span></span><br><span class="line"><span class="string">drwxr-xr-x. 2 root root 4096 May  9  2016 crl</span></span><br><span class="line"><span class="string">drwxr-xr-x. 2 root root 4096 May  9  2016 newcerts</span></span><br><span class="line"><span class="string">drwx------. 2 root root 4096 Apr 17 02:12 private</span></span><br></pre></td></tr></table></figure>
+
+<p>其中命令<code>openssl req -new -x509 -key /etc/pki/CA/private/cakey.pem -out /etc/pki/CA/cacert.pem -days 3650</code>用到子命令为req，其为证书请求及生成的工具，用到的选项解释为：</p>
+<blockquote>
+<p>-new：表示生成一个新的证书签署请求；<br> -x509：专用于生成CA自签证书；<br> -key：指定生成证书用到的私钥文件；<br> -out FILNAME：指定生成的证书的保存路径；<br> -days：指定证书的有效期限，单位为day，默认是365天；</p>
+</blockquote>
+<p>2）颁发证书<br> 通常来说在CA签署颁发证书需要进行以下步骤：</p>
+<ul>
+<li>在需要使用证书的主机上生成私钥（私钥文件位置无限制）</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">root@localhost ~</span>]<span class="meta"># (umask;openssl genrsa -out httpd.key 4096)</span></span><br><span class="line"><span class="number">0022</span></span><br><span class="line">Generating RSA <span class="keyword">private</span> key, <span class="number">4096</span> bit <span class="built_in">long</span> modulus</span><br><span class="line">...................................................................................................................................................................................................++</span><br><span class="line">............................................................++</span><br><span class="line">e <span class="keyword">is</span> <span class="number">65537</span> (<span class="number">0x10001</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>生成证书签署请求；</li>
+</ul>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="variable">@localhost</span> ~]<span class="comment"># openssl req -new -key httpd.key -out httpd.csr -days 3650</span></span><br><span class="line">You are about to be asked to enter information that will be incorporated</span><br><span class="line">into your certificate request.</span><br><span class="line">What you are about to enter is what is called a Distinguished Name <span class="keyword">or</span> a <span class="variable constant_">DN</span>.</span><br><span class="line">There are quite a few fields but you can leave some blank</span><br><span class="line">For some fields there will be a default value,</span><br><span class="line">If you enter <span class="string">&#x27;.&#x27;</span>, the field will be left blank.</span><br><span class="line">-----</span><br><span class="line">Country Name (<span class="number">2</span> letter code) [<span class="variable constant_">XX</span>]<span class="symbol">:CN</span>       </span><br><span class="line">State <span class="keyword">or</span> Province Name (full name) []<span class="symbol">:guangdong</span></span><br><span class="line">Locality Name (eg, city) [Default City]<span class="symbol">:shenzhen</span></span><br><span class="line">Organization Name (eg, company) [Default Company Ltd]<span class="symbol">:magedu</span></span><br><span class="line">Organizational Unit Name (eg, section) []<span class="symbol">:ops</span></span><br><span class="line">Common Name (eg, your name <span class="keyword">or</span> your server<span class="string">&#x27;s hostname) []:web.magedu.com</span></span><br><span class="line"><span class="string">Email Address []:</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">Please enter the following &#x27;</span>extra<span class="string">&#x27; attributes</span></span><br><span class="line"><span class="string">to be sent with your certificate request</span></span><br><span class="line"><span class="string">A challenge password []:</span></span><br><span class="line"><span class="string">An optional company name []:</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>通过可靠的方式将证书签署请求发送给CA主机；</li>
+<li>在CA服务器上签署证书后颁发证书</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">root@localhost ~</span>]<span class="meta"># openssl ca -in httpd.csr -out /etc/pki/CA/certs/httpd.crt -days 365</span></span><br><span class="line">Using configuration <span class="keyword">from</span> /etc/pki/tls/openssl.cnf</span><br><span class="line">Check that the request matches the signature</span><br><span class="line">Signature ok</span><br><span class="line">Certificate Details:</span><br><span class="line">        Serial Number: <span class="number">1</span> (<span class="number">0x1</span>)</span><br><span class="line">        Validity</span><br><span class="line">            Not Before: Apr <span class="number">16</span> <span class="number">18</span>:<span class="number">31</span>:<span class="number">12</span> <span class="number">2018</span> GMT</span><br><span class="line">            Not After : Apr <span class="number">16</span> <span class="number">18</span>:<span class="number">31</span>:<span class="number">12</span> <span class="number">2019</span> GMT</span><br><span class="line">        Subject:</span><br><span class="line">            countryName               = CN</span><br><span class="line">            stateOrProvinceName       = guangdong</span><br><span class="line">            organizationName          = magedu</span><br><span class="line">            organizationalUnitName    = ops</span><br><span class="line">            commonName                = web.magedu.com</span><br><span class="line">        X509v3 extensions:</span><br><span class="line">            X509v3 Basic Constraints: </span><br><span class="line">                CA:FALSE</span><br><span class="line">            Netscape Comment: </span><br><span class="line">                OpenSSL Generated Certificate</span><br><span class="line">            X509v3 Subject Key Identifier: </span><br><span class="line">                D2:A2:<span class="number">81</span>:<span class="number">85</span>:<span class="number">70</span>:<span class="number">1B</span>:<span class="number">12</span>:A2:<span class="number">06</span>:<span class="number">7</span>E:F6:FB:<span class="number">32</span>:<span class="number">7B</span>:<span class="number">56</span>:<span class="number">3B</span>:<span class="number">7B</span>:CB:A2:B2</span><br><span class="line">            X509v3 Authority Key Identifier: </span><br><span class="line">                keyid:<span class="number">43</span>:AE:<span class="number">6</span>C:A2:<span class="number">6F</span>:<span class="number">6</span>E:E4:E1:C3:<span class="number">45</span>:<span class="number">3</span>E:<span class="number">1</span>D:<span class="number">74</span>:E6:<span class="number">94</span>:<span class="number">89</span>:<span class="number">50</span>:<span class="number">25</span>:<span class="number">0</span>C:<span class="number">0</span>A</span><br><span class="line"></span><br><span class="line">Certificate <span class="keyword">is</span> to be certified until Apr <span class="number">16</span> <span class="number">18</span>:<span class="number">31</span>:<span class="number">12</span> <span class="number">2019</span> GMT (<span class="number">365</span> days)</span><br><span class="line">Sign the certificate? [y/n]:y</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="number">1</span> <span class="keyword">out</span> of <span class="number">1</span> certificate requests certified, commit? [y/n]y</span><br><span class="line">Write <span class="keyword">out</span> database <span class="keyword">with</span> <span class="number">1</span> <span class="keyword">new</span> entries</span><br><span class="line">Data Base Updated</span><br></pre></td></tr></table></figure>
+
+<p>上述命令用到了openssl命令的子命令CA，用于在CA服务器上签署或吊销证书。</p>
+<ul>
+<li>查看证书信息：</li>
+</ul>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="variable">@localhost</span> ~]<span class="comment"># openssl x509 -in /etc/pki/CA/certs/httpd.crt -noout -serial -dates -subject</span></span><br><span class="line">serial=<span class="number">01</span></span><br><span class="line">notBefore=Apr <span class="number">16</span> <span class="number">18</span><span class="symbol">:</span><span class="number">31</span><span class="symbol">:</span><span class="number">12</span> <span class="number">2018</span> <span class="variable constant_">GMT</span></span><br><span class="line">notAfter=Apr <span class="number">16</span> <span class="number">18</span><span class="symbol">:</span><span class="number">31</span><span class="symbol">:</span><span class="number">12</span> <span class="number">2019</span> <span class="variable constant_">GMT</span></span><br><span class="line">subject= <span class="regexp">/C=CN/</span><span class="variable constant_">ST</span>=guangdong/O=magedu/<span class="variable constant_">OU</span>=ops/<span class="variable constant_">CN</span>=web.magedu.com</span><br></pre></td></tr></table></figure>
+
+<p>上述查看证书使用了openssl命令的子命令x509，其选项解释为：</p>
+<blockquote>
+<p>-noout：不输出加密的证书内容；<br> -serial：输出证书序列号；<br> -dates：显示证书有效期的开始和终止时间；<br> -subject：输出证书的subject；</p>
+</blockquote>
+<p>3）吊销证书<br> 吊销证书的步骤通常为：</p>
+<ul>
+<li>在使用证书的主机上获取要吊销的证书的serial和subject信息（使用查看证书的命令）</li>
+<li>根据客户提交的serial和subject信息，对比本机数据库index.txt中存储的是否一致</li>
+<li>如一致，则执行吊销证书的操作；</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">root@localhost ~</span>]<span class="meta"># openssl ca -revoke /etc/pki/CA/newcerts/01.pem </span></span><br><span class="line">Using configuration <span class="keyword">from</span> /etc/pki/tls/openssl.cnf</span><br><span class="line">Revoking Certificate <span class="number">01.</span></span><br><span class="line">Data Base Updated</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>生成吊销证书的吊销编号（第一次吊销证书时执行）</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">root@localhost ~</span>]<span class="meta"># echo 01 &gt; /etc/pki/CA/crlnumber</span></span><br><span class="line">[<span class="meta">root@localhost ~</span>]<span class="meta"># cat /etc/pki/CA/crlnumber</span></span><br><span class="line"><span class="number">01</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>更新证书吊销列表</li>
+</ul>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[<span class="meta">root@localhost ~</span>]<span class="meta"># openssl ca -gencrl -out /etc/pki/CA/crl/ca.crl</span></span><br><span class="line">Using configuration <span class="keyword">from</span> /etc/pki/tls/openssl.cnf</span><br></pre></td></tr></table></figure>
+
+<p>-gencrl选项为根据&#x2F;etc&#x2F;pki&#x2F;CA&#x2F;index.txt文件中的信息生成crl文件。</p>
+<ul>
+<li>查看crl文件</li>
+</ul>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">[root<span class="meta">@localhost</span> ~]# openssl crl -<span class="keyword">in</span> /etc/pki/<span class="variable constant_">CA</span>/crl/ca.<span class="property">crl</span> -noout -text</span><br><span class="line"><span class="title class_">Certificate</span> <span class="title class_">Revocation</span> <span class="title class_">List</span> (<span class="variable constant_">CRL</span>):</span><br><span class="line">        <span class="title class_">Version</span> <span class="number">2</span> (<span class="number">0x1</span>)</span><br><span class="line">    <span class="title class_">Signature</span> <span class="title class_">Algorithm</span>: sha1WithRSAEncryption</span><br><span class="line">        <span class="title class_">Issuer</span>: <span class="regexp">/C=CN/</span><span class="variable constant_">ST</span>=guangdong/L=shenzhen/O=magedu/<span class="variable constant_">OU</span>=ops/<span class="variable constant_">CN</span>=ca.<span class="property">magedu</span>.<span class="property">com</span></span><br><span class="line">        <span class="title class_">Last</span> <span class="title class_">Update</span>: <span class="title class_">Apr</span> <span class="number">16</span> <span class="number">18</span>:<span class="number">54</span>:<span class="number">35</span> <span class="number">2018</span> <span class="variable constant_">GMT</span></span><br><span class="line">        <span class="title class_">Next</span> <span class="title class_">Update</span>: <span class="title class_">May</span> <span class="number">16</span> <span class="number">18</span>:<span class="number">54</span>:<span class="number">35</span> <span class="number">2018</span> <span class="variable constant_">GMT</span></span><br><span class="line">        <span class="variable constant_">CRL</span> <span class="attr">extensions</span>:</span><br><span class="line">            X509v3 <span class="variable constant_">CRL</span> <span class="title class_">Number</span>: </span><br><span class="line">                <span class="number">1</span></span><br><span class="line"><span class="title class_">Revoked</span> <span class="title class_">Certificates</span>:</span><br><span class="line">    <span class="title class_">Serial</span> <span class="title class_">Number</span>: <span class="number">01</span>                 #吊销的证书serial</span><br><span class="line">        <span class="title class_">Revocation</span> <span class="title class_">Date</span>: <span class="title class_">Apr</span> <span class="number">16</span> <span class="number">18</span>:<span class="number">51</span>:<span class="number">24</span> <span class="number">2018</span> <span class="variable constant_">GMT</span></span><br><span class="line">    <span class="title class_">Signature</span> <span class="title class_">Algorithm</span>: sha1WithRSAEncryption</span><br><span class="line">.....</span><br></pre></td></tr></table></figure>
+
+
+
+<blockquote>
+<p>作者：小尛酒窝<br>链接：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/e311a6537467">https://www.jianshu.com/p/e311a6537467</a><br>来源：简书<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。</p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+      
+
+
+    <footer class="post-footer">
+          <div class="reward-container">
+  <div>Buy me a coffee</div>
+  <button>
+    赞赏
+  </button>
+  <div class="post-reward">
+      <div>
+        <img src="/images/wechatpay.jpg" alt="will 微信">
+        <span>微信</span>
+      </div>
+      <div>
+        <img src="/images/alipay.jpg" alt="will 支付宝">
+        <span>支付宝</span>
+      </div>
+
+  </div>
+</div>
+
+          <div class="followme">
+  <span>欢迎关注我的其它发布渠道</span>
+
+  <div class="social-list">
+
+      <div class="social-item">
+        <a target="_blank" class="social-link" href="/images/wechat_channel.jpg">
+          <span class="icon">
+            <i class="fab fa-weixin"></i>
+          </span>
+
+          <span class="label">WeChat</span>
+        </a>
+      </div>
+  </div>
+</div>
+
+          <div class="post-tags">
+              <a href="/tags/ssl/" rel="tag"><i class="fa fa-tag"></i> ssl</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/05/26/nginx%E9%85%8D%E7%BD%AESSL%E8%AF%81%E4%B9%A6/" rel="prev" title="nginx配置SSL证书">
+                  <i class="fa fa-chevron-left"></i> nginx配置SSL证书
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2022/05/26/Kubernetes%E8%AF%A6%E7%BB%86%E6%95%99%E7%A8%8B/" rel="next" title="Kubernetes详细教程">
+                  Kubernetes详细教程 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="SOHUCS" sid="54a0747d004c81304c21f44fab1dea0c"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 2021 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">will</span>
+</div>
+<div class="wordcount">
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-line"></i>
+    </span>
+      <span>站点总字数：</span>
+    <span title="站点总字数">163k</span>
+  </span>
+  <span class="post-meta-item">
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span>站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">2:28</span>
+  </span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script size="300" alpha="0.6" zIndex="-1" src="https://cdnjs.cloudflare.com/ajax/libs/ribbon.js/1.0.2/ribbon.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/next-theme-pjax/0.5.0/pjax.min.js" integrity="sha256-3NkoLDrmHLTYj7csHIZSr0MHAFTXth7Ua/DDt4MRUAg=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js" integrity="sha256-yt2kYMy0w8AbtF89WXb2P1rfjcP/HTHLT7097U8Y5b8=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/medium-zoom/1.0.6/medium-zoom.min.js" integrity="sha256-EdPgYcPk/IIrw7FYeuJQexva49pVRZNmt3LculEr7zM=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lozad.js/1.16.0/lozad.min.js" integrity="sha256-mOFREFhqmHeQbXpK2lp4nA3qooVgACfh88fpJftLBbc=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script><script src="/js/pjax.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.0/search.js" integrity="sha256-vXZMYLEqsROAXkEw93GGIvaB2ab+QW6w3+1ahD9nXXA=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+<script class="next-config" data-name="gitter" type="application/json">{"enable":true,"room":"will-lucky/community"}</script>
+<script src="/js/third-party/chat/gitter.js"></script>
+<script src="https://sidecar.gitter.im/dist/sidecar.v1.js" async defer></script>
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+  
+  <script data-pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+  
+    <script src="/js/my_js/fireworks.js"></script>
+  
+  
+      <script src="/js/my_js/sakura.js"></script>
+  
+
+<script class="next-config" data-name="changyan" type="application/json">{"enable":true,"appid":"cyw5H1d0Y","appkey":"6a72992afcbf6f279808d39296872d41"}</script>
+<script src="/js/third-party/comments/changyan.js"></script>
+
+</body>
+</html>
